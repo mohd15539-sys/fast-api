@@ -51,7 +51,7 @@ class FontResult:
     uncertain: bool = False
 
 
-def _categorise(font_name: str) -> Optional[str]:
+def _categorize(font_name: str) -> Optional[str]:
     lower = font_name.lower()
     for key, cat in FONT_CATEGORIES.items():
         if key in lower:
@@ -87,7 +87,8 @@ def identify_font(image: Image.Image, box: List[float]) -> FontResult:
         crop.save(buf, format="PNG")
         buf.seek(0)
 
-        import tempfile, os
+        import os
+        import tempfile
 
         tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
         tmp.write(buf.getvalue())
@@ -114,7 +115,7 @@ def identify_font(image: Image.Image, box: List[float]) -> FontResult:
                 primary=label,
                 confidence=conf,
                 alternatives=alternatives,
-                category=_categorise(label),
+                category=_categorize(label),
                 uncertain=conf < 0.5,
             )
 
@@ -122,7 +123,7 @@ def identify_font(image: Image.Image, box: List[float]) -> FontResult:
             return FontResult(
                 primary=result.strip(),
                 confidence=0.5,
-                category=_categorise(result.strip()),
+                category=_categorize(result.strip()),
                 uncertain=True,
             )
 

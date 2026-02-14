@@ -18,7 +18,7 @@ from app.pipeline.ocr import OCRBlock
 
 
 def _dominant_color(image: Image.Image, box: List[float]) -> str:
-    """Return the dominant (most common) colour in the region as a hex string."""
+    """Return the dominant (most common) color in the region as a hex string."""
     x1, y1, x2, y2 = [int(v) for v in box]
     x1, y1 = max(x1, 0), max(y1, 0)
     x2 = min(x2, image.width)
@@ -28,7 +28,7 @@ def _dominant_color(image: Image.Image, box: List[float]) -> str:
 
     crop = image.crop((x1, y1, x2, y2)).convert("RGB")
     arr = np.array(crop).reshape(-1, 3)
-    # simple approach: find darkest colour cluster (text is usually dark)
+    # simple approach: find darkest color cluster (text is usually dark)
     dark_mask = arr.sum(axis=1) < 384  # rough threshold
     if dark_mask.any():
         mean_col = arr[dark_mask].mean(axis=0).astype(int)
@@ -60,9 +60,7 @@ def estimate_font_metrics(font_size_px: float) -> FontMetrics:
         cap_height_px=round(font_size_px * 0.7, 2),
         x_height_px=round(font_size_px * 0.48, 2),
         units_per_em=1000,
-        scale_factor=round(font_size_px / 1000.0 * 1000 / font_size_px, 2)
-        if font_size_px > 0
-        else 1.0,
+        scale_factor=1.0,
     )
 
 

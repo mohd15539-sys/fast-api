@@ -59,7 +59,7 @@ async def analyze_image(
     2. Font identification on OCR-detected regions
     3. Typography & geometry extraction
     """
-    warnings: list[str] = []
+    analysis_warnings: list[str] = []
 
     # --- Validate file extension ---
     filename = image.filename or ""
@@ -106,11 +106,11 @@ async def analyze_image(
             raise HTTPException(status_code=503, detail="OCR service unavailable")
 
         if not ocr_blocks:
-            warnings.append("OCR returned no text blocks")
+            analysis_warnings.append("OCR returned no text blocks")
             return AnalysisResponse(
                 image_metadata=image_meta,
                 blocks=[],
-                warnings=warnings,
+                warnings=analysis_warnings,
             )
 
         # --- Steps 2 & 3: Font ID + Typography ---
@@ -142,7 +142,7 @@ async def analyze_image(
             )
 
             if font_result.uncertain:
-                warnings.append(
+                analysis_warnings.append(
                     f"Font identification uncertain for {block_id}"
                 )
 
@@ -176,7 +176,7 @@ async def analyze_image(
                 notes="Embed font when possible to ensure rendering parity",
             ),
             reconstruction=Reconstruction(),
-            warnings=warnings,
+            warnings=analysis_warnings,
         )
 
     except HTTPException:
